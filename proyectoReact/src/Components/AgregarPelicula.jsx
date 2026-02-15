@@ -1,29 +1,12 @@
 import { useEffect, useId, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { setPeliculas, guardarPelicula } from "../../features/peliculasSlice";
 
 const AgregarPelicula = () => {
 
-  useEffect(() => {
-  const obtenerPeliculas = async () => {
-    try {
-      const response = await fetch("https://movetrack.develotion.com/peliculas",
-        {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json",
-    //"apikey": "TU_API_KEY_AQUI"
-  }
-}
-      )
-      const data = await response.json();
-      setPeliculas(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
- console.log(obtenerPeliculas()); 
-}, []);
+  const dispatch = useDispatch();
 
 
 
@@ -38,7 +21,7 @@ const AgregarPelicula = () => {
 
   const navigate = useNavigate();
 
-  const agregar = () => {
+  const agregar = async () => {
 
     let categoria = refCategoria.current.value;
     let nombre = refNombre.current.value;
@@ -65,22 +48,36 @@ const AgregarPelicula = () => {
 
     // Crear objeto película
     const nuevaPelicula = {
-      id: Date.now(),
-      categoria: categoria,
+      idCategoria: categoria,
       nombre: nombre,
-      fechaEstreno: fecha
+      fecha: fechaIngresada
     };
 
-    // Obtener lista actual o crear nueva
-    let peliculas = JSON.parse(localStorage.getItem("peliculas")) || [];
+    const response = await fetch("/api/peliculas", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
+        body: JSON.stringify(nuevaPelicula)
+      }
+    );
 
-    peliculas.push(nuevaPelicula);
+    
 
-    localStorage.setItem("peliculas", JSON.stringify(peliculas));
+    if (!response.ok) {
+      const data = await response.json();
+      alert("Error al agregar película: " + data.mensaje);
+    }
+    else {
+      const data = await response.json();
+      nuevaPelicula.fecha = fechaIngresada.toISOString(); // Convertir fecha a formato ISO para almacenar en Redux
 
-    alert("Película agregada correctamente");
+      dispatch(guardarPelicula(nuevaPelicula));
+      alert("Película agregada correctamente");
+     // navigate("/home");
+    }
 
-    navigate("/home");
   };
 
   return (

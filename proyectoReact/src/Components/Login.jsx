@@ -1,43 +1,60 @@
 import { useId, useRef, useState } from "react";
-import {Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const Login = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const idUsuario = useId();
-    const idPassword = useId();
+  const idUsuario = useId();
+  const idPassword = useId();
 
-    //Tomamos los datos del Usuario
-    const [usuario, setUsuario] = useState("");
-    const [password, setPassword] = useState("");
-
-    
+  //Tomamos los datos del Usuario
+  const [usuario, setUsuario] = useState("");
+  const [password, setPassword] = useState("");
 
 
-       const ingreso = () =>{
-      
-        let nomUsuario = usuario;
-        let passUsuario = password;
-         
-        
-        //Verificamos que los datos no esten vacios
-        if(nomUsuario.trim().length == 0  || passUsuario.trim().length == 0 ){
-            alert("Uno de los campos esta vacio");
 
-        //Verificamos que el USUARIO exista 
-        }else if(nomUsuario != localStorage.getItem("usuario") || passUsuario != localStorage.getItem("password")){
-            alert("Usuario o contraseña incorrectos");
 
-        }else{
-            //Creamos token
-            //localStorage.setItem("token", ---);
-            navigate("/home");
-        }
-        
+  const ingreso = async () => {
+
+    let nomUsuario = usuario;
+    let passUsuario = password;
+
+
+    //Verificamos que los datos no esten vacios
+    if (nomUsuario.trim().length == 0 || passUsuario.trim().length == 0) {
+      alert("Uno de los campos esta vacio");
+
+      //Verificamos que el USUARIO exista 
+    } else if (nomUsuario != localStorage.getItem("usuario") || passUsuario != localStorage.getItem("password")) {
+      alert("Usuario o contraseña incorrectos");
+
+    } else {
+
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          usuario: nomUsuario,
+          password: passUsuario,
+        })
+      });
+
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Guardamos todo en localStorage
+        localStorage.setItem("token", data.token); // ← token que devuelve la API
+        navigate("/home");
+      }
     }
-   
 
-    return (
+  }
+
+
+  return (
     <div>
       <h1>LOGIN</h1>
 
@@ -54,7 +71,7 @@ const Login = () => {
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-         id={idPassword}
+        id={idPassword}
       />
 
       <input

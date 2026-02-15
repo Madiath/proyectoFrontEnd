@@ -1,61 +1,80 @@
-
 import { useId, useRef } from "react";
-import {Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const Registro = () => {
 
     const idUsuario = useId();
     const idPassword = useId();
     const idPais = useId();
-    
+
     const refUsuario = useRef();
     const refPassword = useRef();
     const refPais = useRef();
-   
+
+
+
+
     const navigate = useNavigate();
 
-    const registro = () =>{
+    const registro = async () => {
+
         let nomUsuario = refUsuario.current.value;
-        let password = refPassword.current.value;
-        let pais = refPais.current.value;
-        
-    
-        
-        //Verificamos que los datos no esten vacios
-        if(nomUsuario.trim().length == 0  || password.trim().length == 0 || pais.trim().length == 0){
-            alert("Uno de los campos esta vacio");
-        }
-        else{
-            //Creamos usuario y creamos token
+        let pass = refPassword.current.value;
+        let pais = Number(refPais.current.value);
+
+
+
+
+
+        const response = await fetch("/api/usuarios", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                usuario: nomUsuario,
+                password: pass,
+                idPais: pais
+            })
+        });
+
+
+
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Guardamos todo en localStorage
             localStorage.setItem("usuario", nomUsuario);
-            localStorage.setItem("password", password);
+            localStorage.setItem("password", pass);
             localStorage.setItem("pais", pais);
-            //localStorage.setItem("token", ---);
+            localStorage.setItem("token", data.token); // ← token que devuelve la API
             navigate("/home");
         }
+        else {
+            alert("Error al registrarse: " + data.mensaje);
+        }
 
-    
 
-        
     }
 
 
 
 
-  return (
-    <div>
-        <h1>Registro</h1>
-        <label htmlFor={idUsuario}>Nombre:</label>
-            <input type="text" id={idUsuario} ref={refUsuario}/>
-            <label htmlFor={idPassword } >Password:</label>
-            <input type="text" id={idPassword} ref={refPassword}/>
+    return (
+        <div>
+            <h1>Registro</h1>
+            <label htmlFor={idUsuario}>Nombre:</label>
+            <input type="text" id={idUsuario} ref={refUsuario} />
+            <label htmlFor={idPassword} >Password:</label>
+            <input type="text" id={idPassword} ref={refPassword} />
             <label htmlFor={idPais}>Pais:</label>
-            <input type="text" id={idPais} ref={refPais}/>
+            <input type="number" id={idPais} ref={refPais} />
             <input type="button" value="Ingresar" onClick={registro} />
-            <br/>
+            <br />
             <Link to="/login">¿Estas registrado? Ingresa tu cuenta</Link>
-    </div>
-  )
+        </div>
+    )
 }
 
 export default Registro
