@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     todasPeliculas: [],
+    categorias: [],
     peliculasFiltradas: []
 }
 
@@ -12,6 +13,9 @@ export const peliculasSlice = createSlice({
         setPeliculas: (state, action) => {
             state.todasPeliculas = action.payload;
             state.peliculasFiltradas = action.payload;
+        },
+        setCategorias: (state, action) => {
+            state.categorias = action.payload;
         },
 
         guardarPelicula: (state, action) => {
@@ -44,7 +48,8 @@ export const peliculasSlice = createSlice({
 });
 
 export const { 
-    setPeliculas, 
+    setPeliculas,
+    setCategorias, 
     guardarPelicula, 
     eliminarPelicula, 
     filtrarPorFecha, 

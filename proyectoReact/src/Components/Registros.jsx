@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { 
-  setPeliculas, 
+import {
+  setPeliculas,
+  setCategorias,
   eliminarPelicula,
   filtrarPorFecha,
   limpiarFiltro
@@ -10,8 +11,8 @@ import {
 const Registros = () => {
 
   const dispatch = useDispatch();
-const peliculas = useSelector(state => state.peliculas.peliculasFiltradas);
-
+  const peliculas = useSelector(state => state.peliculas.peliculasFiltradas);
+  const categorias = useSelector(state => state.peliculas.categorias);
   const [fechaFiltro, setFechaFiltro] = useState("");
 
   useEffect(() => {
@@ -31,6 +32,8 @@ const peliculas = useSelector(state => state.peliculas.peliculasFiltradas);
         }
 
         const data = await response.json();
+
+        console.log(data.peliculas);
         dispatch(setPeliculas(data.peliculas));
 
       } catch (error) {
@@ -40,7 +43,6 @@ const peliculas = useSelector(state => state.peliculas.peliculasFiltradas);
     };
 
     obtenerPeliculas();
-
   }, [dispatch]);
 
   const borrarPelicula = async (id) => {
@@ -77,6 +79,41 @@ const peliculas = useSelector(state => state.peliculas.peliculasFiltradas);
     dispatch(filtrarPorFecha(fechaFiltro));
   };
 
+
+  useEffect(() => {
+  const obtenerCategorias = async () => {
+    try {
+      const response = await fetch("/api/categorias", {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        }
+      });
+
+      if (!response.ok) {
+        console.log("Error al obtener categorías");
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data.categorias);
+      dispatch(setCategorias(data.categorias));
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  obtenerCategorias();
+}, []);
+
+const obtenerEmojiCategoria = (categoriaId) => {
+  const categoria = categorias.find(c => c.id === categoriaId);
+  return categoria ? categoria.emoji : "Sin categoría";
+};
+
+
+
   return (
     <div>
       <h1>Listado de Películas</h1>
@@ -93,7 +130,7 @@ const peliculas = useSelector(state => state.peliculas.peliculasFiltradas);
           Filtrar
         </button>
 
-        <button 
+        <button
           type="button"
           onClick={() => {
             setFechaFiltro("");
@@ -112,9 +149,9 @@ const peliculas = useSelector(state => state.peliculas.peliculasFiltradas);
         <ul>
           {peliculas.map((peli) => (
             <li key={peli.id}>
-              {peli.nombre} - {peli.fechaEstreno} - {peli.idCategoria}
-              
-              <button 
+              {peli.nombre} - {peli.fechaEstreno} - {obtenerEmojiCategoria(peli.idCategoria)}
+
+              <button
                 onClick={() => borrarPelicula(peli.id)}
                 style={{ marginLeft: "10px" }}
               >
