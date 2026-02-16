@@ -5,6 +5,13 @@ const Informe = () => {
     <div>
         
         <h1>INFORME</h1>
+
+        
+
+
+
+
+
     </div>
   )
 }
