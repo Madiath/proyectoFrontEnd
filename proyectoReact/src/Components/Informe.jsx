@@ -8,7 +8,7 @@ const Informe = () => {
         
         <h1>INFORME</h1>
         <CategoriaFavorita></CategoriaFavorita>
-        {/* <SituacionPersonal></SituacionPersonal> */}
+        <SituacionPersonal></SituacionPersonal> 
     </div>
   )
 }
