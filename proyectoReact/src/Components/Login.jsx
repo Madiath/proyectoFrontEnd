@@ -1,33 +1,32 @@
-import { useId, useRef, useState } from "react";
+import { useId, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
 const Login = () => {
+
   const navigate = useNavigate();
 
   const idUsuario = useId();
   const idPassword = useId();
 
-  //Tomamos los datos del Usuario
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
-
-
-
 
   const ingreso = async () => {
 
     let nomUsuario = usuario;
     let passUsuario = password;
 
-
-    //Verificamos que los datos no esten vacios
-    if (nomUsuario.trim().length == 0 || passUsuario.trim().length == 0) {
-     toast.error("Uno de los campos esta vacio");
-          //Verificamos que el USUARIO exista 
-    } else if (nomUsuario != localStorage.getItem("usuario") || passUsuario != localStorage.getItem("password")) {
+    if (nomUsuario.trim().length === 0 || passUsuario.trim().length === 0) {
+      toast.error("Uno de los campos está vacío");
+    } 
+    else if (
+      nomUsuario !== localStorage.getItem("usuario") ||
+      passUsuario !== localStorage.getItem("password")
+    ) {
       toast.error("Usuario o contraseña incorrectos");
-    } else {
+    } 
+    else {
 
       const response = await fetch("/api/login", {
         method: "POST",
@@ -37,53 +36,72 @@ const Login = () => {
         body: JSON.stringify({
           usuario: nomUsuario,
           password: passUsuario,
-        })
+        }),
       });
-
 
       const data = await response.json();
 
       if (response.ok) {
-        // Guardamos todo en localStorage
-        localStorage.setItem("token", data.token); // ← token que devuelve la API
+        localStorage.setItem("token", data.token);
         navigate("/home");
       }
     }
-
-  }
-
+  };
 
   return (
-    <div>
-      <h1>LOGIN</h1>
+    <div className="container vh-100 d-flex justify-content-center align-items-center">
+      
+      <div className="card shadow-lg p-4" style={{ width: "400px" }}>
+        
+        <h2 className="text-center mb-4 text-primary">
+           Iniciar Sesión
+        </h2>
 
-      <label htmlFor={idUsuario}>Nombre:</label>
-      <input
-        type="text"
-        value={usuario}
-        onChange={(e) => setUsuario(e.target.value)}
-        id={idUsuario}
-      />
+        <div className="mb-3">
+          <label htmlFor={idUsuario} className="form-label">
+            Usuario
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id={idUsuario}
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+            placeholder="Ingrese su usuario"
+          />
+        </div>
 
-      <label htmlFor={idPassword}>Password:</label>
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        id={idPassword}
-      />
+        <div className="mb-3">
+          <label htmlFor={idPassword} className="form-label">
+            Contraseña
+          </label>
+          <input
+            type="password"
+            className="form-control"
+            id={idPassword}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Ingrese su contraseña"
+          />
+        </div>
 
-      <input
-        type="button"
-        value="Ingresar"
-        onClick={ingreso}
-        disabled={usuario.trim() === "" || password.trim() === ""}
-      />
+        <button
+          className="btn btn-primary w-100 mb-3"
+          onClick={ingreso}
+          disabled={usuario.trim() === "" || password.trim() === ""}
+        >
+          Ingresar
+        </button>
 
-      <br />
-      <Link to="/registro">¿No tiene una cuenta? Registrate</Link>
+        <div className="text-center">
+          <Link to="/registro" className="text-decoration-none">
+            ¿No tiene una cuenta? Registrate
+          </Link>
+        </div>
+
+      </div>
     </div>
   );
-}
+};
 
-export default Login
+export default Login;

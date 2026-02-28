@@ -102,16 +102,60 @@ const SituacionPersonal = () => {
   }
 
   return (
-    <div>
-      <h2>Estado del Usuario</h2>
-      <div style={{ fontSize: "60px" }}>
-        {emoji}
-      </div>
-      <p>
-        Comedia: {cantidadComedia} | Drama: {cantidadDrama}
-      </p>
+  <div className="container mt-4">
+
+    <div className="card shadow-lg border-0 p-5 text-center">
+
+      <h2 className="text-info fw-bold mb-4">
+        🎭 Situación Personal
+      </h2>
+
+      {peliculas.length === 0 ? (
+        <div className="alert alert-secondary">
+          No hay datos suficientes para analizar tu situación.
+        </div>
+      ) : (
+        <>
+          <div className="display-1 mb-4">
+            {emoji || "🤔"}
+          </div>
+
+          <div className="row justify-content-center mt-3">
+
+            <div className="col-md-4">
+              <div className="card bg-light border-0 shadow-sm p-3">
+                <h5 className="text-success fw-bold">
+                  {emojiComedia} Comedia
+                </h5>
+                <p className="fs-4 mb-0">
+                  {cantidadComedia}
+                </p>
+              </div>
+            </div>
+
+            <div className="col-md-4 mt-3 mt-md-0">
+              <div className="card bg-light border-0 shadow-sm p-3">
+                <h5 className="text-danger fw-bold">
+                  {emojiDrama} Drama
+                </h5>
+                <p className="fs-4 mb-0">
+                  {cantidadDrama}
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <p className="text-muted mt-4">
+            Tu estado actual está basado en la cantidad de películas registradas por categoría.
+          </p>
+        </>
+      )}
+
     </div>
-  );
+
+  </div>
+);
 };
 
 export default SituacionPersonal;

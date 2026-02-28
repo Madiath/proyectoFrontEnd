@@ -1,5 +1,6 @@
 import { Provider } from 'react-redux'
 import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import Registro from './Components/Registro'
 import Login from './Components/Login'
@@ -28,9 +29,8 @@ function App() {
       {/*Crear el dashboard aqui como route que contiene routes hijos (agregar pelicula, info ,etc)*/}
       {/*Rutas protejidas*/}
       <Route element={<ProtectedRoute/>}>
-      <Route element={<TablaOpciones/>} >
-      
       <Route path="/home" element={<Home/>} />
+      <Route element={<TablaOpciones/>} >
       <Route path="/informe" element={<Informe/>}/>
       <Route path="/agregarPelicula" element={<AgregarPelicula/>}/>
       <Route path="/registros" element={<Registros/>}/>

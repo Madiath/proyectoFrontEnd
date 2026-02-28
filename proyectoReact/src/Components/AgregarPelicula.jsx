@@ -1,8 +1,13 @@
+
 import { useEffect, useId, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
+import {Link, useNavigate } from "react-router";
 import { setPeliculas, guardarPelicula } from "../../features/peliculasSlice";
 import { toast } from "react-toastify";
+
+
+
+
 
 const AgregarPelicula = () => {
 
@@ -80,24 +85,76 @@ const AgregarPelicula = () => {
 
   };
 
-  return (
-    <div>
-      <h1>Agregar Película</h1>
+ return ( 
+  <div className="container mt-4">
 
-      <label htmlFor={idCategoria}>Categoría (id):</label>
-      <input type="number" id={idCategoria} ref={refCategoria} />
+<div className="d-flex justify-content-start mb-3">
+  <Link 
+    to="/home" 
+    className="btn btn-outline-secondary btn-sm px-3 shadow-sm"
+  >
+    ← Volver al Panel
+  </Link>
+</div>
 
-      <label htmlFor={idNombre}>Nombre:</label>
-      <input type="text" id={idNombre} ref={refNombre} />
 
-      <label htmlFor={idFecha}>Fecha de estreno:</label>
-      <input type="date" id={idFecha} ref={refFecha} />
+    <div className="card shadow-lg border-0 p-4">
 
-      <br /><br />
+      <h2 className="text-primary fw-bold mb-4">
+        🎬 Agregar Nueva Película
+      </h2>
 
-      <input type="button" value="Guardar" onClick={agregar} />
+      <div className="mb-3">
+        <label htmlFor={idCategoria} className="form-label fw-semibold">
+          Categoría (ID)
+        </label>
+        <input
+          type="number"
+          id={idCategoria}
+          ref={refCategoria}
+          className="form-control"
+          placeholder="Ingrese el ID de la categoría"
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor={idNombre} className="form-label fw-semibold">
+          Nombre
+        </label>
+        <input
+          type="text"
+          id={idNombre}
+          ref={refNombre}
+          className="form-control"
+          placeholder="Ingrese el nombre de la película"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label htmlFor={idFecha} className="form-label fw-semibold">
+          Fecha de estreno
+        </label>
+        <input
+          type="date"
+          id={idFecha}
+          ref={refFecha}
+          className="form-control"
+        />
+      </div>
+
+      <div className="d-flex justify-content-end">
+        <button
+          className="btn btn-primary px-4"
+          onClick={agregar}
+        >
+          Guardar Película
+        </button>
+      </div>
+
     </div>
-  );
+
+  </div>
+);
 };
 
 export default AgregarPelicula;

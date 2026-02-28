@@ -7,6 +7,7 @@ import {
   filtrarPorFecha,
   limpiarFiltro
 } from "../../features/peliculasSlice";
+import { Link } from "react-router";
 
 const Registros = () => {
 
@@ -115,54 +116,107 @@ const obtenerEmojiCategoria = (categoriaId) => {
 
 
   return (
-    <div>
-      <h1>Listado de Películas</h1>
+  <div className="container mt-4">
 
-      {/* FORM FILTRO */}
-      <form onSubmit={manejarFiltrado}>
-        <input
-          type="date"
-          value={fechaFiltro}
-          onChange={(e) => setFechaFiltro(e.target.value)}
-        />
+<div className="d-flex justify-content-start mb-3">
+  <Link 
+    to="/home" 
+    className="btn btn-outline-secondary btn-sm px-3 shadow-sm"
+  >
+    ← Volver al Panel
+  </Link>
+</div>
 
-        <button type="submit">
-          Filtrar
-        </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            setFechaFiltro("");
-            dispatch(limpiarFiltro());
-          }}
-        >
-          Limpiar
-        </button>
+    <div className="card shadow-lg border-0 p-4">
+
+      <h2 className="text-success fw-bold mb-4">
+        📄 Listado de Películas
+      </h2>
+
+      {/* FILTRO */}
+      <form 
+        onSubmit={manejarFiltrado}
+        className="row g-3 align-items-end mb-4"
+      >
+        <div className="col-md-4">
+          <label className="form-label fw-semibold">
+            Filtrar por fecha
+          </label>
+          <input
+            type="date"
+            className="form-control"
+            value={fechaFiltro}
+            onChange={(e) => setFechaFiltro(e.target.value)}
+          />
+        </div>
+
+        <div className="col-md-auto">
+          <button type="submit" className="btn btn-success">
+            Filtrar
+          </button>
+        </div>
+
+        <div className="col-md-auto">
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => {
+              setFechaFiltro("");
+              dispatch(limpiarFiltro());
+            }}
+          >
+            Limpiar
+          </button>
+        </div>
       </form>
 
-      <hr />
-
+      {/* TABLA */}
       {peliculas.length === 0 ? (
-        <p>No hay películas cargadas</p>
+        <div className="alert alert-info">
+          No hay películas cargadas
+        </div>
       ) : (
-        <ul>
-          {peliculas.map((peli) => (
-            <li key={peli.id}>
-              {peli.nombre} - {peli.fechaEstreno} - {obtenerEmojiCategoria(peli.idCategoria)}
-
-              <button
-                onClick={() => borrarPelicula(peli.id)}
-                style={{ marginLeft: "10px" }}
-              >
-                Borrar
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="table-responsive">
+          <table className="table table-hover align-middle">
+            <thead className="table-light">
+              <tr>
+                <th>Nombre</th>
+                <th>Fecha Estreno</th>
+                <th>Categoría</th>
+                <th className="text-end">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {peliculas.map((peli) => (
+                <tr key={peli.id}>
+                  <td className="fw-semibold">
+                    {peli.nombre}
+                  </td>
+                  <td>
+                    {new Date(peli.fechaEstreno).toLocaleDateString()}
+                  </td>
+                  <td>
+                    {obtenerEmojiCategoria(peli.idCategoria)}
+                  </td>
+                  <td className="text-end">
+                    <button
+                      onClick={() => borrarPelicula(peli.id)}
+                      className="btn btn-sm btn-danger"
+                    >
+                      🗑 Borrar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
+
     </div>
-  );
+  </div>
+);
 };
 
 export default Registros;

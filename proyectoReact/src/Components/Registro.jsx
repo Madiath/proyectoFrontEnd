@@ -64,20 +64,76 @@ const Registro = () => {
 
 
 
-    return (
-        <div>
-            <h1>Registro</h1>
-            <label htmlFor={idUsuario}>Nombre:</label>
-            <input type="text" id={idUsuario} ref={refUsuario} />
-            <label htmlFor={idPassword} >Password:</label>
-            <input type="text" id={idPassword} ref={refPassword} />
-            <label htmlFor={idPais}>Pais:</label>
-            <input type="number" id={idPais} ref={refPais} />
-            <input type="button" value="Ingresar" onClick={registro} />
-            <br />
-            <Link to="/">¿Estas registrado? Ingresa tu cuenta</Link>
-        </div>
-    )
+   return (
+  <div className="container d-flex justify-content-center align-items-center min-vh-100">
+
+    <div className="card shadow-lg border-0 p-5" style={{ width: "400px" }}>
+
+      <h2 className="text-primary fw-bold text-center mb-4">
+        📝 Crear Cuenta
+      </h2>
+
+      <div className="mb-3">
+        <label htmlFor={idUsuario} className="form-label fw-semibold">
+          Usuario
+        </label>
+        <input
+          type="text"
+          id={idUsuario}
+          ref={refUsuario}
+          className="form-control"
+          placeholder="Ingrese su usuario"
+        />
+      </div>
+
+      <div className="mb-3">
+        <label htmlFor={idPassword} className="form-label fw-semibold">
+          Contraseña
+        </label>
+        <input
+          type="password"
+          id={idPassword}
+          ref={refPassword}
+          className="form-control"
+          placeholder="Ingrese su contraseña"
+        />
+      </div>
+
+      <div className="mb-4">
+        <label htmlFor={idPais} className="form-label fw-semibold">
+          País (ID)
+        </label>
+        <input
+          type="number"
+          id={idPais}
+          ref={refPais}
+          className="form-control"
+          placeholder="Ingrese el ID del país"
+        />
+      </div>
+
+      <div className="d-grid mb-3">
+        <button
+          className="btn btn-primary py-2"
+          onClick={registro}
+        >
+          Registrarse
+        </button>
+      </div>
+
+      <div className="text-center">
+        <Link 
+          to="/" 
+          className="text-decoration-none text-secondary small"
+        >
+          ¿Ya estás registrado? Ingresá a tu cuenta
+        </Link>
+      </div>
+
+    </div>
+
+  </div>
+);
 }
 
 export default Registro
