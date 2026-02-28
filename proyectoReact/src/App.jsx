@@ -11,12 +11,14 @@ import AgregarPelicula from './Components/AgregarPelicula'
 import Registros from './Components/Registros'
 import Analisis from './Components/Analisis'
 import { store } from '../store/store'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
 
   return (
-    
+ 
       <BrowserRouter>
+      <ToastContainer />
       <Provider store={store}>
       <Routes>
         
@@ -39,7 +41,9 @@ function App() {
       
       </Routes>
       </Provider>
+      
       </BrowserRouter>
+     
     
   )
 }

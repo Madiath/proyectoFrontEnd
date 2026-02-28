@@ -1,5 +1,6 @@
 import { useId, useRef } from "react";
 import { Link, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const Registro = () => {
 
@@ -21,38 +22,40 @@ const Registro = () => {
         let nomUsuario = refUsuario.current.value;
         let pass = refPassword.current.value;
         let pais = Number(refPais.current.value);
+    
 
-
-
-
-
-        const response = await fetch("/api/usuarios", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                usuario: nomUsuario,
-                password: pass,
-                idPais: pais
-            })
-        });
-
-
-
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // Guardamos todo en localStorage
-            localStorage.setItem("usuario", nomUsuario);
-            localStorage.setItem("password", pass);
-            localStorage.setItem("pais", pais);
-            localStorage.setItem("token", data.token); // ← token que devuelve la API
-            navigate("/home");
+        if (nomUsuario.trim().length == 0 || pass.trim().length == 0) {
+            toast.error("Uno de los campos esta vacio");
         }
         else {
-            alert("Error al registrarse: " + data.mensaje);
+            const response = await fetch("/api/usuarios", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    usuario: nomUsuario,
+                    password: pass,
+                    idPais: pais
+                })
+            });
+
+
+
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Guardamos todo en localStorage
+                localStorage.setItem("usuario", nomUsuario);
+                localStorage.setItem("password", pass);
+                localStorage.setItem("pais", pais);
+                localStorage.setItem("token", data.token); // ← token que devuelve la API
+                navigate("/home");
+            }
+            else {
+                toast.error("Error al registrarse: " + data.mensaje);
+            }
         }
 
 
@@ -72,7 +75,7 @@ const Registro = () => {
             <input type="number" id={idPais} ref={refPais} />
             <input type="button" value="Ingresar" onClick={registro} />
             <br />
-            <Link to="/login">¿Estas registrado? Ingresa tu cuenta</Link>
+            <Link to="/">¿Estas registrado? Ingresa tu cuenta</Link>
         </div>
     )
 }

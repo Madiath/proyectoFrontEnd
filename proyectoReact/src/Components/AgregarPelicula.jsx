@@ -2,6 +2,7 @@ import { useEffect, useId, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { setPeliculas, guardarPelicula } from "../../features/peliculasSlice";
+import { toast } from "react-toastify";
 
 const AgregarPelicula = () => {
 
@@ -33,7 +34,7 @@ const AgregarPelicula = () => {
       nombre.trim().length === 0 ||
       fecha.trim().length === 0
     ) {
-      alert("Uno de los campos está vacío");
+      toast.error("Uno de los campos está vacío");
       return;
     }
 
@@ -42,7 +43,7 @@ const AgregarPelicula = () => {
     const fechaIngresada = new Date(fecha);
 
     if (fechaIngresada > hoy) {
-      alert("La fecha de estreno no puede ser posterior a hoy");
+      toast.error("La fecha de estreno no puede ser posterior a hoy");
       return;
     }
 
@@ -67,15 +68,14 @@ const AgregarPelicula = () => {
 
     if (!response.ok) {
       const data = await response.json();
-      alert("Error al agregar película: " + data.mensaje);
+      toast.error("Error al agregar película: " + data.mensaje);
     }
     else {
       const data = await response.json();
       nuevaPelicula.fecha = fechaIngresada.toISOString(); // Convertir fecha a formato ISO para almacenar en Redux
 
       dispatch(guardarPelicula(nuevaPelicula));
-      alert("Película agregada correctamente");
-     // navigate("/home");
+      toast.success("Película agregada exitosamente");
     }
 
   };
@@ -85,7 +85,7 @@ const AgregarPelicula = () => {
       <h1>Agregar Película</h1>
 
       <label htmlFor={idCategoria}>Categoría (id):</label>
-      <input type="text" id={idCategoria} ref={refCategoria} />
+      <input type="number" id={idCategoria} ref={refCategoria} />
 
       <label htmlFor={idNombre}>Nombre:</label>
       <input type="text" id={idNombre} ref={refNombre} />

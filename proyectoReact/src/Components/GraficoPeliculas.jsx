@@ -1,19 +1,38 @@
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import {useEffect} from "react";
+import { useSelector, useDispatch} from "react-redux";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 import {
   setPeliculas,
   setCategorias
 } from "../../features/peliculasSlice";
 
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+  
+
+const GraficoPeliculas = () => {
 
 
 
-const SituacionPersonal = () => {
+const dispatch = useDispatch();
 
-  const dispatch = useDispatch();
-
-
-  useEffect(() => {
+ useEffect(() => {
 
     const obtenerPeliculas = async () => {
       try {
@@ -72,46 +91,53 @@ const SituacionPersonal = () => {
 }, []);
 
 
-
-
   const peliculas = useSelector(state => state.peliculas.todasPeliculas);
   const categorias = useSelector(state => state.peliculas.categorias);
 
-  const idComedia = categorias.find(c => c.nombre === "Comedia")?.id;
-  const idDrama = categorias.find(c => c.nombre === "Drama")?.id;
+  const conteoCategorias = {};
 
-  const emojiComedia = categorias.find(c => c.nombre === "Comedia")?.emoji;
-  const emojiDrama = categorias.find(c => c.nombre === "Drama")?.emoji;
+  peliculas.forEach(peli => {
+    const categoria = categorias.find(c => c.id === peli.idCategoria);
 
+    if (categoria) {
+      if (!conteoCategorias[categoria.nombre]) {
+        conteoCategorias[categoria.nombre] = 0;
+      }
+      conteoCategorias[categoria.nombre]++;
+    }
+  });
 
+  const labels = Object.keys(conteoCategorias);
+  const valores = Object.values(conteoCategorias);
 
-  const cantidadComedia = peliculas.filter(
-    peli => peli.idCategoria === idComedia
-  ).length;
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Cantidad de Películas",
+        data: valores,
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+      },
+    ],
+  };
 
-  const cantidadDrama = peliculas.filter(
-    peli => peli.idCategoria === idDrama
-  ).length;
-
-  let emoji = "";
-
-  if (cantidadComedia > cantidadDrama) {
-    emoji = emojiComedia;
-  } else if (cantidadDrama > cantidadComedia) {
-    emoji = emojiDrama;
-  }
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" },
+      title: {
+        display: true,
+        text: "Películas por Categoría",
+      },
+    },
+  };
 
   return (
     <div>
-      <h2>Estado del Usuario</h2>
-      <div style={{ fontSize: "60px" }}>
-        {emoji}
-      </div>
-      <p>
-        Comedia: {cantidadComedia} | Drama: {cantidadDrama}
-      </p>
+      <h2>Gráfico de Películas</h2>
+      <Bar options={options} data={data} />
     </div>
   );
 };
 
-export default SituacionPersonal;
+export default GraficoPeliculas;

@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -22,12 +23,10 @@ const Login = () => {
 
     //Verificamos que los datos no esten vacios
     if (nomUsuario.trim().length == 0 || passUsuario.trim().length == 0) {
-      alert("Uno de los campos esta vacio");
-
-      //Verificamos que el USUARIO exista 
+     toast.error("Uno de los campos esta vacio");
+          //Verificamos que el USUARIO exista 
     } else if (nomUsuario != localStorage.getItem("usuario") || passUsuario != localStorage.getItem("password")) {
-      alert("Usuario o contraseña incorrectos");
-
+      toast.error("Usuario o contraseña incorrectos");
     } else {
 
       const response = await fetch("/api/login", {
