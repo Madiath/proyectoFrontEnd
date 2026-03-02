@@ -37,7 +37,7 @@ export const peliculasSlice = createSlice({
             const fecha = action.payload;
 
             state.peliculasFiltradas = state.todasPeliculas.filter(
-                peli => peli.fechaEstreno === fecha
+                peli => peli.fechaEstreno.startsWith(fecha)
             );
         },
 

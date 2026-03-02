@@ -20,12 +20,6 @@ const Login = () => {
     if (nomUsuario.trim().length === 0 || passUsuario.trim().length === 0) {
       toast.error("Uno de los campos está vacío");
     } 
-    else if (
-      nomUsuario !== localStorage.getItem("usuario") ||
-      passUsuario !== localStorage.getItem("password")
-    ) {
-      toast.error("Usuario o contraseña incorrectos");
-    } 
     else {
 
       const response = await fetch("/api/login", {
@@ -43,7 +37,12 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("usuario", nomUsuario);
+        localStorage.setItem("pais", data.pais); 
         navigate("/home");
+      }
+      else{
+        toast.error("Usuario o contraseña incorrectos");
       }
     }
   };

@@ -24,7 +24,7 @@ const Registro = () => {
         let pais = Number(refPais.current.value);
     
 
-        if (nomUsuario.trim().length == 0 || pass.trim().length == 0) {
+        if (nomUsuario.trim().length == 0 || pass.trim().length == 0 || pais <= 0) {
             toast.error("Uno de los campos esta vacio");
         }
         else {

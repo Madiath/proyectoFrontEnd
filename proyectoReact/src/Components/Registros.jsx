@@ -194,7 +194,7 @@ const obtenerEmojiCategoria = (categoriaId) => {
                     {peli.nombre}
                   </td>
                   <td>
-                    {new Date(peli.fechaEstreno).toLocaleDateString()}
+                    {new Date(peli.fechaEstreno + "T00:00:00").toLocaleDateString()}
                   </td>
                   <td>
                     {obtenerEmojiCategoria(peli.idCategoria)}
