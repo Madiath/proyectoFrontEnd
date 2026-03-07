@@ -1,21 +1,13 @@
-
 import { useEffect, useId, useRef } from "react";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router";
-import { setPeliculas, guardarPelicula } from "../../features/peliculasSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router";
+import { guardarPelicula, setCategorias } from "../../features/peliculasSlice";
 import { toast } from "react-toastify";
-
-
-
-
 
 const AgregarPelicula = () => {
 
-
   const dispatch = useDispatch();
-
-
-
+  const categorias = useSelector(state => state.peliculas.categorias);
 
   const idCategoria = useId();
   const idNombre = useId();
@@ -25,17 +17,46 @@ const AgregarPelicula = () => {
   const refNombre = useRef();
   const refFecha = useRef();
 
-  const navigate = useNavigate();
+  // Obtener categorías al cargar
+  useEffect(() => {
+
+    const obtenerCategorias = async () => {
+      try {
+
+        const response = await fetch("/api/categorias", {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+          }
+        });
+
+        if (!response.ok) {
+          toast.error("Error al obtener categorías");
+          return;
+        }
+
+        const data = await response.json();
+
+        dispatch(setCategorias(data.categorias));
+
+      } catch (error) {
+        console.error(error);
+        toast.error("Error inesperado");
+      }
+    };
+
+    obtenerCategorias();
+
+  }, [dispatch]);
 
   const agregar = async () => {
 
-    let categoria = refCategoria.current.value;
+    let categoria = parseInt(refCategoria.current.value);
     let nombre = refNombre.current.value;
     let fecha = refFecha.current.value;
 
-    // Validar campos vacíos
     if (
-      categoria.trim().length === 0 ||
+      isNaN(categoria) ||
       nombre.trim().length === 0 ||
       fecha.trim().length === 0
     ) {
@@ -43,44 +64,48 @@ const AgregarPelicula = () => {
       return;
     }
 
-    // Validar que la fecha no sea futura
     const hoy = new Date().toISOString().split("T")[0];
-    
 
     if (fecha > hoy) {
       toast.error("La fecha de estreno no puede ser posterior a hoy");
       return;
     }
 
-    // Crear objeto película
     const nuevaPelicula = {
       idCategoria: categoria,
       nombre: nombre,
-      fecha: fecha
+      fechaEstreno: fecha
     };
 
-    const response = await fetch("/api/peliculas", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token")
-      },
-      body: JSON.stringify(nuevaPelicula)
-    }
-    );
+    try {
 
+      const response = await fetch("/api/peliculas", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify(nuevaPelicula)
+      });
 
-
-    if (!response.ok) {
       const data = await response.json();
-      toast.error("Error al agregar película: " + data.mensaje);
-    }
-    else {
-      const data = await response.json();
-      
 
-      dispatch(guardarPelicula(nuevaPelicula));
-      toast.success("Película agregada exitosamente");
+      if (!response.ok) {
+        toast.error("Error al agregar película: " + data.mensaje);
+      }
+      else {
+
+        dispatch(guardarPelicula(nuevaPelicula));
+
+        toast.success("Película agregada exitosamente");
+
+      }
+
+    } catch (error) {
+
+      console.error(error);
+      toast.error("Error inesperado");
+
     }
 
   };
@@ -97,24 +122,35 @@ const AgregarPelicula = () => {
         </Link>
       </div>
 
-
       <div className="card shadow-lg border-0 p-4">
 
         <h2 className="text-primary fw-bold mb-4">
           🎬 Agregar Nueva Película
         </h2>
 
+        {/* SELECT DE CATEGORÍAS */}
         <div className="mb-3">
           <label htmlFor={idCategoria} className="form-label fw-semibold">
-            Categoría (ID)
+            Categoría
           </label>
-          <input
-            type="number"
+
+          <select
             id={idCategoria}
             ref={refCategoria}
-            className="form-control"
-            placeholder="Ingrese el ID de la categoría"
-          />
+            className="form-select"
+          >
+
+            <option value="">
+              Seleccione una categoría
+            </option>
+
+            {categorias.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.nombre}
+              </option>
+            ))}
+
+          </select>
         </div>
 
         <div className="mb-3">

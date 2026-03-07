@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     todasPeliculas: [],
     categorias: [],
-    peliculasFiltradas: []
+    peliculasFiltradas: [],
+    paises:[]
 }
 
 export const peliculasSlice = createSlice({
@@ -43,6 +44,10 @@ export const peliculasSlice = createSlice({
 
         limpiarFiltro: (state) => {
             state.peliculasFiltradas = state.todasPeliculas;
+        },
+
+        setPaises: (state, action) => {
+            state.paises = action.payload;
         }
     }
 });
@@ -53,7 +58,8 @@ export const {
     guardarPelicula, 
     eliminarPelicula, 
     filtrarPorFecha, 
-    limpiarFiltro 
+    limpiarFiltro,
+    setPaises
 } = peliculasSlice.actions;
 
 export default peliculasSlice.reducer;
